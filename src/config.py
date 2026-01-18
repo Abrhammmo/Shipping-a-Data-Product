@@ -75,3 +75,14 @@ LOGGING_CONFIG = {
     "log_dir": Path("../data/logs"),
     "log_file": "scraper.log",
 }
+
+# -------------------------------------------------------------------
+# Database Configuration
+# -------------------------------------------------------------------
+DATABASE_CONFIG = {
+    "host": os.getenv("POSTGRES_HOST", "localhost"),
+    "port": int(os.getenv("POSTGRES_PORT", 5433)),
+    "user": os.getenv("POSTGRES_USER", "postgres"),
+    "password": os.getenv("POSTGRES_PASSWORD"),
+    "dbname": os.getenv("POSTGRES_DB", "medical_warehouse"),
+}
