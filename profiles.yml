@@ -5,9 +5,8 @@ medical_warehouse:
       type: postgres
       host: localhost
       user: postgres
-      password: postgres
-      port: 5432
+      password: root
+      port: 5433
       dbname: medical_warehouse
       schema: public
       threads: 4
-      schema: analytics
