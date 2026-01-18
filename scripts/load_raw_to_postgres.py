@@ -147,10 +147,10 @@ def insert_records(conn, records: List[Dict]):
 # --------------------------------------------------
 
 def main():
-    logger.info("Starting raw Telegram data load")
+    print("Starting raw Telegram data load")
 
     try:
-        raw_path = Path(DATA_PATHS["raw"]) / "telegram_messages" / "26-01-17"
+        raw_path = Path(DATA_PATHS["raw"]) / "telegram_messages" / "2026-01-17"
 
         conn = get_db_connection()
         create_raw_table(conn)
@@ -159,12 +159,11 @@ def main():
         insert_records(conn, records)
 
         conn.close()
-        logger.info("✅ Task 2 Load completed successfully")
+        print("✅ Task 2 Load completed successfully")
 
     except Exception as e:
-        logger.error("❌ Task 2 Load failed")
-        logger.exception(e)
-        sys.exit(1)
+        print("❌ Task 2 Load failed")
+        print(e)
 
 
 if __name__ == "__main__":
