@@ -26,26 +26,26 @@ TELEGRAM_CONFIG = {
 # value -> Telegram username (without https://t.me/)
 # -------------------------------------------------------------------
 TELEGRAM_CHANNELS = {
-    # "CHEMED": "CheMed123",
-    # "LOBELIA": "lobelia4cosmetics",
-    "TIKVAH": "tikvahpharma"
-    # "RAYA": "rayapharmaceuticals",
-    # "CAFIMAD": "CafimadD",
-    # "NEW_OPTICS": "newoptics",
-    # "VIMAX": "Vimax123",
+    "CHEMED": "CheMed123",
+    "LOBELIA": "lobelia4cosmetics",
+    "TIKVAH": "tikvahpharma",
+    "RAYA": "rayapharmaceuticals",
+    "CAFIMAD": "CafimadD",
+    "NEW_OPTICS": "newoptics",
+    "VIMAX": "Vimax123",
 }
 
 # -------------------------------------------------------------------
 # Channel Metadata (used later in dim_channels)
 # -------------------------------------------------------------------
 CHANNEL_METADATA = {
-    # "CHEMED": {"channel_type": "Medical"},
-    # "LOBELIA": {"channel_type": "Cosmetics"},
-    "TIKVAH": {"channel_type": "Pharmaceutical"}
-    # "RAYA": {"channel_type": "Pharmaceutical"},
-    # "CAFIMAD": {"channel_type": "Pharmaceutical"},
-    # "NEW_OPTICS": {"channel_type": "Medical"},
-    # "VIMAX": {"channel_type": "Medical"},
+    "CHEMED": {"channel_type": "Medical"},
+    "LOBELIA": {"channel_type": "Cosmetics"},
+    "TIKVAH": {"channel_type": "Pharmaceutical"},
+    "RAYA": {"channel_type": "Pharmaceutical"},
+    "CAFIMAD": {"channel_type": "Pharmaceutical"},
+    "NEW_OPTICS": {"channel_type": "Medical"},
+    "VIMAX": {"channel_type": "Medical"},
 }
 
 # -------------------------------------------------------------------
