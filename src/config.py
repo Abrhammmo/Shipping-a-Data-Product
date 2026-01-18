@@ -86,3 +86,4 @@ DATABASE_CONFIG = {
     "password": os.getenv("POSTGRES_PASSWORD"),
     "dbname": os.getenv("POSTGRES_DB", "medical_warehouse"),
 }
+
