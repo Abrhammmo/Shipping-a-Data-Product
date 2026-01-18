@@ -1,0 +1,5 @@
+outs:
+- md5: 2d7a7ab32b2289a3e292f4fec12f4c05
+  size: 28590
+  hash: md5
+  path: dbt.log

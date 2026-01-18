@@ -1,0 +1,5 @@
+outs:
+- md5: ff824a26ddec7f8e31d9c20472bea39d
+  size: 4503530
+  hash: md5
+  path: scraper.log
