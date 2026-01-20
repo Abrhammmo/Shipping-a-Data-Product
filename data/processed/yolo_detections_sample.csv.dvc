@@ -1,0 +1,5 @@
+outs:
+- md5: 44608b2060882cc314516c3fd257cb14
+  size: 362
+  hash: md5
+  path: yolo_detections_sample.csv
