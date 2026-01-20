@@ -247,10 +247,149 @@ dbt docs serve
 * Generated dbt documentation
 * Clear star schema design rationale
 
+
+
+## Task 3 – Data Enrichment with Object Detection (YOLO)
+
+### Objective
+
+Use computer vision to analyze images scraped from Telegram channels and integrate the findings into the data warehouse to gain additional insights.
+
+### Implementation
+
+1. **YOLO Environment Setup**
+
+   * Installed the `ultralytics` package and used the YOLOv8 nano model (`yolov8n.pt`) for efficient image detection on standard hardware.
+   * YOLO detects general objects such as bottles and people, providing analytical value even without domain-specific training.
+
+2. **Object Detection Script**
+
+   * Implemented in `src/yolo_detect.py`.
+   * The script scans all images downloaded during Task 1.
+   * For each image, YOLO detects objects and records the **object class**, **confidence score**, and a **categorical label** based on the content:
+
+     * `promotional` → person + product
+     * `product_display` → product only
+     * `lifestyle` → person only
+     * `other` → neither detected
+   * Added `channel_key` from the source channel to each record for later integration.
+
+3. **Detection Results**
+
+   * Results stored as a **CSV file** in `data/processed/yolo_detection.csv`.
+   * CSV columns: `message_id`, `channel_key`, `date_key`, `detected_class`, `confidence_score`, `image_category`.
+
+4. **Integration with Data Warehouse**
+
+   * Created a new DBT model: `models/marts/fct_image_detections.sql`.
+   * Loaded YOLO detection results into PostgreSQL and joined with `fct_messages` using `message_id`.
+   * This allowed enriched analytics, such as correlating post type (`promotional` vs `product_display`) with views.
+
+5. **Analysis and Insights**
+
+   * "Promotional" posts (person + product) generally received higher average views than "product_display" posts.
+   * Channels such as `CheMed123` and `Vimax123` utilized more visual content than others.
+   * **Limitations**: Pre-trained YOLO models do not detect specific product names or local Ethiopian pharmaceuticals; some detections may be incorrect or incomplete for domain-specific objects.
+
+### Deliverables
+
+* `src/yolo_detect.py` → Object detection script
+* `data/processed/yolo_detection.csv` → Detection results
+* `models/marts/fct_image_detections.sql` → DBT model integrating YOLO results
+* Analytical insights documented in this README
+
 ---
 
-## 🔜 Next Steps
+## Task 4 – Analytical API
 
-* **Task 3:** Data enrichment using YOLO (object detection on images)
-* **Task 4:** Analytical API using FastAPI
-* **Task 5:** Pipeline orchestration and CI/CD
+### Objective
+
+Expose the data warehouse through a REST API using FastAPI, allowing stakeholders to query key business metrics programmatically.
+
+### Implementation
+
+1. **Project Structure**
+
+   * `api/main.py` → All FastAPI endpoints
+   * `api/database.py` → SQLAlchemy database connection and session management
+   * `api/schemas.py` → Pydantic models for request and response validation
+
+2. **Endpoints Implemented**
+
+   * **Top Products:** `/api/reports/top-products?limit=10` → Returns the most frequently mentioned products.
+   * **Channel Activity:** `/api/channels/{channel_name}/activity` → Returns posting volume, trends, and engagement metrics.
+   * **Message Search:** `/api/search/messages?query=<keyword>&limit=20` → Keyword-based message search.
+   * **Visual Content Stats:** `/api/reports/visual-content` → Statistics about image usage across channels (counts and ratios).
+
+3. **Validation and Error Handling**
+
+   * Pydantic models enforce correct request/response structures.
+   * All endpoints return proper HTTP status codes and descriptive error messages.
+
+4. **Documentation**
+
+   * Auto-generated OpenAPI docs available at `/docs`.
+   * Allows testing endpoints interactively.
+
+### Deliverables
+
+* FastAPI application (`api/main.py`) with 4 analytical endpoints
+* Pydantic schemas (`api/schemas.py`)
+* OpenAPI documentation at `/docs`
+
+---
+
+## Task 5 – Pipeline Orchestration
+
+### Objective
+
+Automate the entire pipeline using Dagster, enabling reproducible, observable, and schedulable execution of ETL, DBT transformations, YOLO enrichment, and API exposure.
+
+### Implementation
+
+1. **Dagster Setup**
+
+   * Installed `dagster` and `dagster-webserver`.
+   * Defined a pipeline (`pipeline.py`) composed of these ops:
+
+     * `scrape_telegram_data` → Run scraper from Task 1
+     * `load_raw_to_postgres` → Load raw JSON into PostgreSQL
+     * `run_dbt_transformations` → Execute DBT models from Task 2
+     * `run_yolo_enrichment` → Run YOLO detection from Task 3
+
+2. **Job Graph**
+
+   * Ops are connected in a dependency graph to ensure correct execution order.
+
+3. **Execution**
+
+   * Launch via `dagster dev -f pipeline.py`
+   * Monitor pipeline runs, logs, and status using **Dagster UI**: [http://localhost:3000](http://localhost:3000)
+
+4. **Scheduling and Alerts**
+
+   * Configured daily runs with automatic logging and alerting on failures.
+
+### Deliverables
+
+* `pipeline.py` → Dagster pipeline definition
+* Dagster UI screenshots showing successful execution
+
+---
+
+## 🚀 Running the FastAPI API
+
+### Local (recommended)
+
+From the project root:
+
+```bash
+uvicorn api.main:app --reload
+```
+
+Then open:
+
+- **Docs UI (Swagger)**: `http://127.0.0.1:8000/docs`
+- **Root health/info**: `http://127.0.0.1:8000/`
+
+If you see `{"detail":"Not Found"}`, it usually means you’re visiting a path that doesn’t exist (for example `http://127.0.0.1:8000/api`), or you started a different module than `api.main:app`.
