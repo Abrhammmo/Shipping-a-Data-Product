@@ -1,0 +1,31 @@
+with detections as (
+
+    select
+        message_id,
+        detected_class,
+        confidence_score,
+        image_category
+    from {{ ref('stg_yolo_detections') }}
+
+),
+
+messages as (
+
+    select
+        message_id,
+        channel_key,
+        date_key
+    from {{ ref('fct_messages') }}
+
+)
+
+select
+    d.message_id,
+    m.channel_key,
+    m.date_key,
+    d.detected_class,
+    d.confidence_score,
+    d.image_category
+from detections d
+join messages m
+  on d.message_id = m.message_id
