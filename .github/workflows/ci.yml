@@ -1,0 +1,62 @@
+name: CI
+
+on:
+  push:
+    branches: ["**"]
+  pull_request:
+
+jobs:
+  tests:
+    name: Unit tests (pytest)
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: "pip"
+
+      # Keep CI lightweight/reliable: the current test suite doesn't require the
+      # full (very large) runtime dependencies (e.g. torch/ultralytics).
+      - name: Install test dependencies
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install pytest
+
+      - name: Run tests
+        env:
+          PYTHONPATH: .
+        run: |
+          pytest -q
+
+  api-import-smoke:
+    name: API import smoke test
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: "pip"
+
+      - name: Install minimal API dependencies
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install fastapi uvicorn sqlalchemy pydantic pydantic-settings psycopg2-binary
+
+      - name: Import FastAPI app
+        env:
+          PYTHONPATH: .
+        run: |
+          python -c "from api.main import app; print(app.title)"
+
