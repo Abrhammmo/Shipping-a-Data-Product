@@ -14,6 +14,7 @@ app = FastAPI(
 @app.get("/")
 def root():
     return {"message": "Welcome to the Medical Telegram Analytics API. Visit /docs for API documentation."}
+
 @app.get(
     "/api/reports/top-products",
     response_model=list[schemas.TopProduct],
